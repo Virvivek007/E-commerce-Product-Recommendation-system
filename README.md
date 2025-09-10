@@ -14,7 +14,7 @@ The goal is to help businesses:
 * Support **expansion strategies** across regions & sales channels.
 
 ---
-
+# **Streamlit app link**  <a href = "https://e-commerce-appuct-recommendation-system-oy9uqf8uuc8bnyeu7o3mq9.streamlit.app/">E-commerce product app</a>
 ## 📂 Dataset
 
 * **Source**: <a href ="E-commerce-product_dataset.csv">Dataset</a>
