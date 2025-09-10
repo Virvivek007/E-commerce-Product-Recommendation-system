@@ -10,6 +10,7 @@ Original file is located at
 """
 
 #Importing Python Libraries
+import streamlit as st
 import numpy as np
 import pandas as pd
 import seaborn as sns
