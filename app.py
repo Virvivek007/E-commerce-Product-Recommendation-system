@@ -118,22 +118,28 @@ product = st.selectbox("Select Item Type for Forecast", options=data['Item Type'
 trend_data = data.groupby(['Year', 'Item Type'])['Units Sold'].sum().reset_index()
 product_sales = trend_data[trend_data['Item Type'] == product][['Year', 'Units Sold']]
 product_sales = product_sales.set_index('Year')
-
 if len(product_sales) > 3:
-    model = SARIMAX(product_sales, order=(1,1,1), seasonal_order=(1,1,1,3))
-    results = model.fit(disp=False)
+    try:
+        model = SARIMAX(product_sales, order=(1,1,1), seasonal_order=(1,1,1,3))
+        results = model.fit(disp=False)
 
-    forecast = results.get_forecast(steps=5)
-    forecast_index = range(product_sales.index.max()+1, product_sales.index.max()+6)
-    forecast_values = forecast.predicted_mean
+        forecast = results.get_forecast(steps=5)
+        forecast_values = pd.Series(np.ravel(forecast.predicted_mean))
+        forecast_index = list(range(product_sales.index.max()+1, product_sales.index.max()+6))
 
-    fig, ax = plt.subplots()
-    ax.plot(product_sales.index, product_sales['Units Sold'], marker='o', label="Actual Sales")
-    ax.plot(forecast_index, forecast_values, marker='x', linestyle='--', label="Forecast")
-    ax.set_title(f"Sales Forecast for {product}")
-    ax.set_xlabel("Year")
-    ax.set_ylabel("Units Sold")
-    ax.legend()
-    st.pyplot(fig)
+        fig, ax = plt.subplots()
+        ax.plot(product_sales.index, product_sales['Units Sold'], marker='o', label="Actual Sales")
+
+        if len(forecast_values) == len(forecast_index):
+            ax.plot(forecast_index, forecast_values, marker='x', linestyle='--', label="Forecast")
+
+        ax.set_title(f"Sales Forecast for {product}")
+        ax.set_xlabel("Year")
+        ax.set_ylabel("Units Sold")
+        ax.legend()
+        st.pyplot(fig)
+
+    except Exception as e:
+        st.error(f"Model failed: {e}")
 else:
     st.warning("Not enough data points for forecasting.")
